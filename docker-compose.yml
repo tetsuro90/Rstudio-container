@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  rstudio:
+    build: .
+    container_name: R-4.0.2
+    environment: 
+      - PASSWORD=agmicro
+    ports:
+      - "8787:8787"
+    volumes:
+      - $PWD/work:/home/rstudio/work
+      - $PWD/library:/home/rstudio/lib/R/library
+    cap_drop:
+      - CAP_NET_RAW
+    security_opt:
+      - no-new-privileges

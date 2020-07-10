@@ -1,0 +1,31 @@
+{
+    "reuse_sessions_for_project_links": true,
+    "panes": {
+        "quadrants": [
+            "TabSet1",
+            "Console",
+            "TabSet2",
+            "Source"
+        ],
+        "tabSet1": [
+            "Environment",
+            "History",
+            "Connections",
+            "Build",
+            "VCS",
+            "Tutorial",
+            "Presentation"
+        ],
+        "tabSet2": [
+            "Files",
+            "Plots",
+            "Packages",
+            "Help",
+            "Viewer"
+        ],
+        "console_left_on_top": false,
+        "console_right_on_top": true
+    },
+    "editor_theme": "Idle Fingers",
+    "posix_terminal_shell": "bash"
+}
