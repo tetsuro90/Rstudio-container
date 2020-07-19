@@ -3,7 +3,8 @@ FROM rocker/rstudio:latest
 RUN apt-get update \
     && apt-get -y install \
         devscripts \
-        zlib1g-dev
+        zlib1g-dev \
+        libxt-dev
 
 
 RUN install2.r --error \
