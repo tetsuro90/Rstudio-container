@@ -116,7 +116,17 @@ plot(df2[, L])
 ```
 
 ```{r}
+vM1 <- apply(M, 2, var)
+vM2 <- apply(M2, 2, var)
+vM1
+vM2
+```
 
+```{r}
+ylim <- c(min(vM1, vM2), max(vM1, vM2))
+plot(vM1, ylim = ylim, type = "b")
+par(new=T)
+plot(vM2, ylim = ylim, type = "b", col = "red")
 ```
 
 
