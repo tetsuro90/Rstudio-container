@@ -1,0 +1,149 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+```{r}
+# R7-1.R: カイ自乗検定
+obtable2 <- matrix(c(25, 23, 12, 15, 17, 8),
+                   nrow = 2, byrow = TRUE)
+obtable2
+
+chisq.test(obtable2)
+```
+
+```{r}
+# R7-2.R: ANOVA
+# 3群の群別サンプル数、平均、SD
+nx <- c(40, 40, 20); mb <- c(50, 60, 45); sdb <- c(50, 50, 50)*0.01
+
+# データ生成
+t1 <- rnorm(nx[1], mb[1], sdb[1])
+t2 <- rnorm(nx[2], mb[2], sdb[2])
+t3 <- rnorm(nx[3], mb[3], sdb[3])
+
+tb <- c(t1, t2, t3)
+
+x <- c(rep("x1", nx[1]), rep("x2", nx[2]), rep("x3", nx[3]))
+boxplot(tb ~ x)
+```
+
+```{r}
+# ANOVA
+summary(aov(tb ~ x ))
+```
+
+```{r}
+# R7-5.R 固有値分解
+
+Nm <- 100 # 項目数
+Ns <- c(rpois(4, 100), rpois(20, 10))   # rpois(サンプリング回数, λ)
+Npop <- length(Ns)
+
+Ns
+Npop   # 集団数
+```
+
+```{r}
+M <- NULL   # 全ジェノタイプを収める行列
+
+for (j in 1:Npop) {
+  tmpM <- matrix(rep(0, Nm*Ns[j]), ncol=Nm)
+  
+  # 亜集団ごとに平均を振っている
+  for (i in 1:Nm) {
+    af <- rnorm(1, mean = 0, sd = 1)
+    tmpM[, i] <- rnorm(Ns[j], af)
+  }
+  
+  M <- rbind(M, tmpM)
+}
+
+tmpM
+```
+
+```{r}
+# データの標準化
+wholemean <- mean(M)
+M <- M - wholemean
+mu <- apply(M, 2, mean)
+M <- t(t(M) - mu)   # Rの演算はブロードキャストされる
+```
+
+```{r}
+# 特異値分解
+# Mは正方行列じゃないので注意
+svdout <- svd(M)
+M2 <- svdout$u %*% diag(svdout$d)
+
+dim(M)
+dim(M2)
+```
+
+```{r}
+dim(svdout$u)
+dim(svdout$v)
+length(svdout$d)
+```
+
+```{r}
+tail(svdout$u)
+```
+
+
+```{r}
+par(mfcol=c(1,2))
+
+# 固有値分解前後をimageプロット
+image(1:sum(Ns), 1:Nm, M)
+image(1:sum(Ns), 1:Nm, M2)
+```
+
+```{r}
+df1 <- as.data.frame(M); df2 <- as.data.frame(M2)
+L <- 1:5; par(mfcol=c(1,1))
+plot(df1[, L])
+plot(df2[, L])
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
