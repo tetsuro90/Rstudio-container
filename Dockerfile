@@ -4,7 +4,9 @@ RUN apt-get update \
     && apt-get -y install \
         devscripts \
         zlib1g-dev \
-        libxt-dev
+        libxt-dev \
+        # rstanでの読み込みエラー。refresh install
+        nodejs
 
 
 RUN install2.r --error \
