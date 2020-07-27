@@ -129,9 +129,62 @@ par(new=T)
 plot(vM2, ylim = ylim, type = "b", col = "red")
 ```
 
+```{r}
+# R9-1.R ランダムサンプリング
+p <- 0.3; x <- 0:10
+pr <- choose(10, x) * p^x * (1 - p) ^(10 - x)
+A <- 12; B <- 28; S <- A + B
+x <- 0:10; y <- 10 - x
 
+# 10個を一度に取り出す場合
+pr2 <- exp(lgamma(10 +1) + lgamma(30 + 1) + lgamma(A + 1) + lgamma(B + 1) 
+           - (lgamma(S +1) + lgamma(x + 1) + lgamma(y + 1) + lgamma(A - x + 1)  + lgamma(B - y + 1)))
+ylim <- c(0, 0.5)
+plot(x-0.5, pr, ylim = ylim, type = "s")
+par(new = T)
+plot(x -0.5, pr2, ylim = ylim, type = "s", col="red")
+```
 
+```{r}
+exProb <- function(m) {
+  m1 <- apply(m, 1, sum)
+  m2 <- apply(m, 2, sum)
+  s <- sum(m)
+  exp(sum(lgamma(m1 + 1)) +sum(lgamma(m2 + 1)) - 
+        (lgamma(s + 1) +sum(lgamma(m + 1))))
+}
 
+S <- 40; A <- 0:S; B <- S - A; N <- 10; x <- 0:N
+
+probmat <- matrix(0, length(A), length(x))
+for (i in A) {
+  for (j in x) {
+    y <- N - j; z <- i -j; w <- S- (j + y + z);
+    if (j >= 0 & y >= 0 & z >= 0 & w >= 0) {
+      data <- c(j, y, z, w)
+      probmat[i + 1, j + 1] <- exProb(matrix(c(j, y, z, w), nrow = 2))
+      
+    }
+    
+  }
+}
+
+phi <- 80; theta <- 0; shade <- 0.3
+persp(A, x, probmat, xlab = "No. A in 40", ylab = "No. A in 10", 
+      zlab = "probability", phi=phi, theta = theta, shade = shade)
+plot(A -0.5 ,probmat[, 4], type = "s")
+abline(h = 0, col = "red")
+```
+
+```{r}
+t1 <- as.table(matrix(c(0.3, 0.2, 0.3, 0.2), nrow = 2, byrow = TRUE))
+t1
+t2 <- as.table(matrix(c(0.4, 0.1, 0.2, 0.3), nrow = 2, byrow = TRUE))
+t2
+
+plot(t1)
+plot(t2)
+```
 
 
 
