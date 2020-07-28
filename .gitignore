@@ -1,2 +1,4 @@
 library/
 *.html
+work/book-r-stan-bayesian-model-intro/
+*.rds

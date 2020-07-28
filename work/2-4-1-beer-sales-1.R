@@ -1,6 +1,6 @@
 library(rstan)
 library(ggfortify)
-library()
+library(bayesplot)
 
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
@@ -23,14 +23,14 @@ mcmc_result <- stan(
 )
 
 print(
-  mcmc_reslut,
+  mcmc_result,
   probs = c(0.025, 0.5, 0.975)
 )
 
-traceplot(mcmc_reslut)
-traceplot(mcmc_reslut, inc_warmup = T)
+traceplot(mcmc_result)
+traceplot(mcmc_result, inc_warmup = T)
 
-mcmc_sample <- rstan::extract(mcmc_reslut, permuted = FALSE)
+mcmc_sample <- rstan::extract(mcmc_result, permuted = FALSE)
 class(mcmc_sample)
 
 dim(mcmc_sample)
@@ -40,7 +40,7 @@ mcmc_sample[1, "chain:1", "mu"]
 
 mu_mcmc_vec <- as.vector(mcmc_sample[,, "mu"])
 
-median(mu_mcmc_sample)
+median(mu_mcmc_vec)
 
 mean(mu_mcmc_vec)
 
@@ -56,6 +56,68 @@ mu_df <- data.frame(
 )
 
 ggplot(data = mu_df, mapping = aes(x = mu_mcmc_sample)) + geom_density(size = 1.5)
+
+
+mcmc_hist(mcmc_sample, pars = c("mu", "sigma"))
+
+mcmc_dens(mcmc_sample, pars = c("mu", "sigma"))
+
+mcmc_trace(mcmc_sample, pars = c("mu", "sigma"))
+
+mcmc_combo(mcmc_sample, pars = c("mu", "sigma"))
+
+mcmc_intervals(
+  mcmc_sample, pars = c("mu", "sigma"),
+  prob = 0.8,
+  prob_outer = 0.95
+)
+
+mcmc_areas(mcmc_sample, pars = c("mu", "sigma"),
+           prob = 0.6,
+           prob_outer = 0.99)
+
+mcmc_acf_bar(mcmc_sample, pars = c("mu", "sigma"))
+
+
+# 事後予測チェック
+animal_num <- read.csv("book-r-stan-bayesian-model-intro/book-data/2-5-1-animal-num.csv")
+head(animal_num)
+
+sample_size <- nrow(animal_num)
+
+data_list <- list(animal_num = animal_num$animal_num, N = sample_size)
+
+mcmc_normal <- stan(
+  file = "2-5-1-normal-dist.stan",
+  data = data_list,
+  seed = 1
+)
+
+mcmc_poisson <- stan(
+  file = "2-5-2-poisson-dist.stan",
+  data = data_list,
+  seed = 1
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
