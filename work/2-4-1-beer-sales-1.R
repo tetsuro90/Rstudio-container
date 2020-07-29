@@ -99,19 +99,41 @@ mcmc_poisson <- stan(
   seed = 1
 )
 
+y_rep_normal <- rstan::extract(mcmc_normal)$pred
+y_rep_poisson <- rstan::extract(mcmc_poisson)$pred
+
+dim(y_rep_normal)
+
+ppc_hist(y = animal_num$animal_num,
+         yrep = y_rep_normal[1:5, ])
+
+ppc_hist(y = animal_num$animal_num,
+         yrep = y_rep_poisson[1:5,])
 
 
+file_beer_sales_ab <- read.csv("book-r-stan-bayesian-model-intro/book-data/2-6-1-beer-sales-ab.csv")
+
+ggplot(data = file_beer_sales_ab, 
+       mapping = aes(x = sales, y = ..density..,
+                     color = beer_name, fill = beer_name)) + 
+  geom_histogram(alpha = 0.5, position = "identity") +
+  geom_density(alpha = 0.5, size = 0)
+
+sales_a <- file_beer_sales_ab$sales[1:100]
+sales_b <- file_beer_sales_ab$sales[101:200]
+
+data_list_ab <- list(
+  sales_a = sales_a,
+  sales_b = sales_b,
+  N = 100
+)
 
 
-
-
-
-
-
-
-
-
-
+mcmc_result_6 <- stan(
+  file = "2-6-5-difference-mean.stan",
+  data = data_list_ab,
+  seed = 1
+)
 
 
 
