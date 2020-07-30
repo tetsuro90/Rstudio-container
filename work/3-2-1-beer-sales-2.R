@@ -1,6 +1,7 @@
 library(rstan)
 library(bayesplot)
 library(ggplot2)
+library(brms)
 
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
@@ -75,17 +76,33 @@ mcmc_areas(
   prob_outer = 0.99
 )
 
+# ~の左に応答変数を、右に説明変数を
+formula_lm <- formula(sales ~ temperature)
+
+X <- model.matrix(formula_lm, file_beer_sales_2)
+
+head(X, n=5)
+
+N <- nrow(file_beer_sales_2)
+
+K <- 2
+
+Y <- file_beer_sales_2$sales
+
+data_list_design <- list(N = N, K = K, Y = Y, X = X)
 
 
+mcmc_result_design <- stan(
+  file = "3-4-1-lm-design-matrix.stan",
+  data = data_list_design,
+  seed = 1
+)
 
-
-
-
-
-
-
-
-
-
-
+# brmsを用いた単回帰モデルを作る
+simple_lm_brms <- brms(
+  formula = sales ~ temperatue,
+  family = gaussian(link = "identity"),
+  data = file_beer_sales_2,
+  seed = 1
+)
 
