@@ -6,7 +6,8 @@ RUN apt-get update \
         zlib1g-dev \
         libxt-dev \
         # rstanでの読み込みエラー。refresh install
-        nodejs
+        nodejs \
+        libglpk-dev
 
 
 RUN install2.r --error \
