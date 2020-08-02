@@ -99,10 +99,38 @@ mcmc_result_design <- stan(
 )
 
 # brmsを用いた単回帰モデルを作る
-simple_lm_brms <- brms(
-  formula = sales ~ temperatue,
+simple_lm_brms <- brm(
+  formula = sales ~ temperature,
   family = gaussian(link = "identity"),
   data = file_beer_sales_2,
   seed = 1
 )
 
+simple_lm_brms
+
+plot(simple_lm_brms)
+
+simple_lm_formula <- bf(sales ~ temperature)
+gaussian()
+binomial()
+poisson()
+
+simple_lm_brms_2 <- brm(
+  formula = simple_lm_formula,
+  family = gaussian(),
+  data = file_beer_sales_2,
+  seed = 1,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  thin = 1
+)
+
+simple_lm_brms_3 <- brm(
+  formula = sales ~ temperature,
+  family = gaussian(),
+  data = file_beer_sales_2,
+  seed = 1,
+  prior = c(set_prior("", class = "Intercept"),
+            set_prior("", class = "sigma"))
+)
