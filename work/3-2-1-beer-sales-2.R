@@ -134,3 +134,73 @@ simple_lm_brms_3 <- brm(
   prior = c(set_prior("", class = "Intercept"),
             set_prior("", class = "sigma"))
 )
+
+prior_summary(simple_lm_brms_3)
+
+get_prior(simple_lm_brms_3)
+
+stancode(simple_lm_brms_3)
+
+stanplot(simple_lm_brms_3,
+         type = "intervals",
+         pars = "^b_",
+         prob = 0.8,
+         prob_outer = 0.95)
+
+new_data <- data.frame(temperature = 20)
+
+fitted(simple_lm_brms, new_data)
+
+mcmc_sample <- as.mcmc(simple_lm_brms, combine_chains = TRUE)
+
+mcmc_b_Intercept <- mcmc_sample[, "b_Intercept"]
+mcmc_b_temperature <- mcmc_sample[, "b_temperature"]
+mcmc_sigma <- mcmc_sample[, "sigma"]
+
+saigen_fitted <- mcmc_b_Intercept + 20 * mcmc_b_temperature
+
+plot(saigen_fitted)
+
+set.seed(1)
+saigen_predict <- do.call(
+  rnorm,
+  c(4000, list(mean = saigen_fitted, sd = mcmc_sigma))
+)
+
+
+eff <- marginal_effects(simple_lm_brms)
+plot(eff, points = TRUE)
+
+set.seed(1)
+
+eff_pre <- marginal_effects(simple_lm_brms, method = "predict")
+plot(eff_pre, points = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
