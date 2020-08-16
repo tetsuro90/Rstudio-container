@@ -187,17 +187,75 @@ plot(t2)
 ```
 
 
+```{r}
+# R12-1.R 信頼区間
+set.seed(.Random.seed[1])
+N <- 20; k <- 6
+p <- seq(from = 0, to = 1, by = 0.01)
+
+v <- dbeta(p, k + 1, N - k + 1)
+
+plot(p, v, type = "l")
+
+abline(v = k/N)
+
+cirange <- 0.95
+
+ci <- qbeta(c((1 - cirange)/2, 1 - (1 - cirange) / 2), k + 1, N - k + 1)
+
+abline(v = ci)
+```
+
+```{r}
+x <- 1.2; y <- 1.5; p <- seq(from=0, to=1, by=0.01)
+v3 <- dbeta(p, x, y)
+plot(p, v3, type = "l", ylim = c(0,4))
+```
+
+```{r}
+v4 <- dbeta(p, x+6, y+14)
+par(new = TRUE)
+plot(p, v4, type = "l", ylim = c(0, 4))
+```
 
 
+```{r}
+# R12-4.R ハプロタイプ頻度推定
+Make3x3 <- function(f) {
+  tmp <- f %*% t(f)   # tmpは4*4のmatrix
+  matrix(c(tmp[1, 1], 2 * tmp[1, 2], tmp[2, 2], 
+           2 * tmp[1, 3], 2 * (tmp[1, 4] + tmp[2, 3]), 2 * tmp[2, 4],
+           tmp[3, 3], 2 * tmp[3, 4], tmp[4, 4]),
+           nrow = 3, byrow = TRUE)
+}
+
+CalcLike3x3 <- function(g = matrix(1, 3, 3),  # 3x3の1行列
+                        f = c(0.25, 0.25, 0.25, 0.25)) {
+  F <- Make3x3(f)
+  sum(g * log(F))
+}
+
+CalcR <- function(h) {
+  p_A <- h[1] + h[3]
+  p_B <- h[1] + h[2]
+  (h[1] - p_A * p_B)/sqrt(p_A * (1 - p_A) * p_B * (1 - p_B))
+}
+
+ns <- matrix(c(2, 5, 2, 10, 18, 14, 4, 25, 20),
+             nrow = 3, byrow = TRUE)
+
+N <- 10000
+
+p <- c(1, 1, 1, 1)
+
+sampled <- gtools::rdirichlet(N, p)
+
+loglikes <- apply(sampled, 1, CalcLike3x3, g=ns)
+
+maxset <- sampled[which(loglikes == max(loglikes)),]  # which: 論理演算子でTRUEとなるindexを取得する。 # 最大尤度を返した4はプロタイプ
 
 
-
-
-
-
-
-
-
+```
 
 
 
